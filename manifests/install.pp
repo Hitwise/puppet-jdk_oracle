@@ -10,11 +10,13 @@ define jdk_oracle::install(
   $jce            = false,
   $default_java   = true,
   $create_symlink = true,
+  $version_hash   = '',
   $ensure         = 'installed'
   ) {
 
-  $default_8_update = '11'
-  $default_8_build  = '12'
+  $default_8_update = '121'
+  $default_8_build  = '13'
+  $default_8_hash = 'e9e7ea248e2c4826b92b3f075a80e441'
   $default_7_update = '67'
   $default_7_build  = '01'
   $default_6_update = '45'
@@ -50,7 +52,22 @@ define jdk_oracle::install(
         } else {
           $version_b = $default_8_build
         }
-        $javaDownloadURI = "http://download.oracle.com/otn-pub/java/jdk/${version}u${version_u}-b${version_b}/${package}-${version}u${version_u}-linux-${plat_filename}.tar.gz"
+        if (($version_update == 'default' or $version_build == 'default') and ($version_hash == '')) {
+          # If either version parts are default and hash is empty,
+          # Assume, that the user means the default value
+          $version_h = $default_8_hash
+        } elsif ($version_hash != 'default') {
+          $version_h = $version_hash
+        } else {
+          $version_h = $default_8_hash
+        }
+
+        if ($version_h != '') {
+          $javaDownloadURI = "http://download.oracle.com/otn-pub/java/jdk/${version}u${version_u}-b${version_b}/${version_h}/${package}-${version}u${version_u}-linux-${plat_filename}.tar.gz"
+        } else {
+          $javaDownloadURI = "http://download.oracle.com/otn-pub/java/jdk/${version}u${version_u}-b${version_b}/${package}-${version}u${version_u}-linux-${plat_filename}.tar.gz"
+        }
+
         $java_home = "${install_dir}/${package_home}1.${version}.0_${version_u}"
         $jceDownloadURI = 'http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip'
       }

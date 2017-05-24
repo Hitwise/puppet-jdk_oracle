@@ -16,6 +16,12 @@
 #   String.  Java Version build to install
 #   Defaults to <tt>Defaults based on major version</tt>.
 #
+# [*version_hash*]
+#   String. Hash from the Oracle download URL. Must be specified for more
+#   current Java versions. If set to an empty string, the hash is ignored
+#   in the URL. Defaults to an empty string, but if version_update or
+#   version_build are set to "default", the most current hash is used.
+#
 # [* java_install_dir *]
 #   String.  Java Installation Directory
 #   Defaults to <tt>/opt</tt>.
@@ -56,6 +62,7 @@ class jdk_oracle (
   $platform       = hiera('jdk_oracle::platform',       'x64' ),
   $package        = hiera('jdk_oracle::package',        'jdk' ),
   $jce            = hiera('jdk_oracle::jce',            false ),
+  $version_hash   = hiera('jdk_oracle::version_hash',   '' ),
   $default_java   = hiera('jdk_oracle::default_java',   true ),
   $ensure         = 'installed'
   ) {
@@ -71,6 +78,7 @@ class jdk_oracle (
     platform       => $platform,
     package        => $package,
     jce            => $jce,
+    version_hash   => $version_hash,
     default_java   => $default_java,
   }
 
